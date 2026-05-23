@@ -21,7 +21,7 @@ with col2:
 st.divider()
 
 st.subheader("追加機能（PCA確認）")
-bolus_equiv_h = st.number_input("1回ドーズ量（何時間分か）", min_value=0, step=0.5)
+bolus_equiv_h = st.number_input("1回ドーズ量（何時間分か）", min_value=0.0, step=0.5)
 freq_per_day = st.number_input("1日平均使用回数（回/日）", min_value=0, step=1)
 
 st.divider()
