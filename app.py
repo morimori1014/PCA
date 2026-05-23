@@ -10,19 +10,19 @@ st.header("入力")
 col1, col2 = st.columns(2)
 
 with col1:
-    ampoule_mg = st.number_input("アンプル量 (mg)", min_value=0.0, step=1.0)
-    ampoule_ml = st.number_input("アンプル容量 (mL)", min_value=0.0, step=0.1)
-    ampoules = st.number_input("使用本数", min_value=0.0, step=1.0)
+    ampoule_mg = st.number_input("アンプル量 (mg)", min_value=0, step=1, value=20)
+    ampoule_ml = st.number_input("アンプル容量 (mL)", min_value=0, step=1, value=2)
+    ampoules = st.number_input("使用本数", min_value=0, step=1, value=1)
 
 with col2:
-    saline_ml = st.number_input("生理食塩水 (mL)", min_value=0.0, step=1.0)
-    rate_ml_h = st.number_input("投与速度 (mL/h)", min_value=0.0, step=0.01)
+    saline_ml = st.number_input("生理食塩水 (mL)", min_value=0, step=1, value=48)
+    rate_ml_h = st.number_input("投与速度 (mL/h)", min_value=0.0, step=0.01, value=0.10)
 
 st.divider()
 
 st.subheader("追加機能（PCA確認）")
-bolus_equiv_h = st.number_input("1回ドーズ量（何時間分か）", min_value=0.0, step=0.5)
-freq_per_day = st.number_input("1日平均使用回数（回/日）", min_value=0.0, step=1.0)
+bolus_equiv_h = st.number_input("1回ドーズ量（何時間分か）", min_value=0, step=0.5)
+freq_per_day = st.number_input("1日平均使用回数（回/日）", min_value=0, step=1)
 
 st.divider()
 
@@ -54,10 +54,10 @@ else:
 
 st.header("結果")
 
-st.write(f"**Total量:** {total_ml:.2f} mL")
-st.write(f"**濃度:** {concentration:.4f} mg/mL")
-st.write(f"**1時間投与量:** {mg_per_h:.4f} mg/h")
-st.write(f"**1日投与量:** {mg_per_day:.4f} mg/day")
+st.write(f"**Total量:** {total_ml:.0f} mL")
+st.write(f"**濃度:** {concentration:.2f} mg/mL")
+st.write(f"**1時間投与量:** {mg_per_h:.2f} mg/h")
+st.write(f"**1日投与量:** {mg_per_day:.2f} mg/day")
 
 st.divider()
 
