@@ -21,8 +21,8 @@ with col2:
 st.divider()
 
 st.subheader("追加機能（PCA確認）")
-dose_mg = st.number_input("1回ドーズ量 (mg)", min_value=0.0, step=0.1)
-freq_per_day = st.number_input("1日使用回数（回/日）", min_value=0.0, step=1.0)
+bolus_equiv_h = st.number_input("1回ドーズ量（何時間分か）", min_value=0.0, step=0.5)
+freq_per_day = st.number_input("1日平均使用回数（回/日）", min_value=0.0, step=1.0)
 
 st.divider()
 
@@ -38,15 +38,19 @@ else:
 mg_per_h = concentration * rate_ml_h
 mg_per_day = mg_per_h * 24
 
-if mg_per_h > 0 and dose_mg > 0:
-    duration_h = dose_mg / mg_per_h
+# --- PCA bolus model ---
+# bolus = basal mg/h × bolus_equiv_h
+# average bolus rate = bolus × freq/24
+# total consumption = basal + bolus contribution
+if mg_per_h > 0:
+    consumption_rate = mg_per_h * (1 + (bolus_equiv_h * freq_per_day / 24))
 else:
-    duration_h = 0
+    consumption_rate = 0
 
-if freq_per_day > 0:
-    interval_h = 24 / freq_per_day
+if consumption_rate > 0:
+    time_to_empty = total_mg / consumption_rate
 else:
-    interval_h = 0
+    time_to_empty = 0
 
 st.header("結果")
 
@@ -57,17 +61,13 @@ st.write(f"**1日投与量:** {mg_per_day:.4f} mg/day")
 
 st.divider()
 
-st.subheader("PCA確認")
-st.write(f"**1回投与持続時間:** {duration_h:.2f} 時間")
-st.write(f"**使用間隔（理論）:** {interval_h:.2f} 時間")
+st.subheader("PCA評価")
+st.write(f"**想定枯渇時間:** {time_to_empty:.1f} 時間")
 
-if duration_h > 0 and interval_h > 0:
-    coverage = duration_h / interval_h
-    st.write(f"**カバー率（目安）:** {coverage:.2f}")
+if bolus_equiv_h > 0 and freq_per_day > 0:
+    st.write(f"**ボーラス負荷係数:** {1 + (bolus_equiv_h * freq_per_day / 24):.2f} 倍")
 
-    if coverage < 1:
-        st.warning("投与間隔より効果持続が短い可能性があります")
-    else:
-        st.success("持続時間は使用間隔をカバーしています")
+    if (1 + (bolus_equiv_h * freq_per_day / 24)) > 1.5:
+        st.warning("ボーラス使用により消費が大きく増加する可能性があります")
 
 st.caption("※本ツールはダブルチェック補助目的です。最終判断は医療プロトコルに従ってください")
